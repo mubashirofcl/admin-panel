@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="/style/user/user.css">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">USER DASHBOARD</div>
+                <nav class="nav-links">
+                    <a href="" class="nav-link active">Home</a>
+                </nav>
+            </div>
+            <div class="header-right">
+                <i class="fa-solid fa-user fa-lg"></i>
+                <a href="/user/logout">
+                    <button class="action-btn">Logout</button>
+                </a>
+
+            </div>
+        </header>
+
+        <main class="main-card">
+            <h1>Welcome, {{name}}</h1>
+            <p>We're glad to have you here. Explore your dashboard and enjoy the video below.</p>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0"
+                    allowfullscreen></iframe>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 M. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact</a>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>

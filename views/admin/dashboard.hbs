@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+
+    <link rel="stylesheet" href="/style/admin/dashboard.css">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">ADMIN PANEL</div>
+                <nav class="nav-links">
+                    <a href="#" class="nav-link">Dashboard</a>
+                    <a href="#" class="nav-link active">Users</a>
+                </nav>
+            </div>
+            <div class="header-right">
+                <i class="fas fa-cog header-icon"></i>
+                <i class="fas fa-bell header-icon"></i>
+                <i class="fas fa-user-shield header-icon"></i>
+                <a href="/admin/logout">
+                    <button class="action-btn">Logout</button>
+                </a>
+            </div>
+        </header>
+
+        <main class="main-card">
+            <h1 class="page-title">Users Details</h1>
+
+            <div class="filter-bar">
+                <form action="/admin/list-users" method="get" class="filter-left">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" name="q" placeholder="Search by name or email" value="{{q}}">
+                    </div>
+                    <button type="submit" class="action-btn">Search</button>
+                </form>
+
+                <div class="actions-right">
+                    <button type="button" class="action-btn" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                        Add User
+                    </button>
+                    <button class="action-btn"><i class="fas fa-bars"></i></button>
+                </div>
+            </div>
+
+
+
+            <div class="table-responsive">
+                <table class="people-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Last update</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each user}}
+                        <tr>
+                            <td>{{@index}}</td>
+                            <td>
+                                <div class="user-info">
+                                    <i class="fa-solid fa-user-tie fa-lg pl-2"></i>
+                                    <span class="user-name">{{this.name}}</span>
+                                </div>
+                            </td>
+                            <td>{{this.email}}</td>
+                            <td>{{this.updatedAt}}</td>
+                            <td>
+                                {{#if (eq this.status "active")}}
+                                <span class="status-badge status-active">Active</span>
+                                {{else}}
+                                <span class="status-badge status-blocked">Blocked</span>
+                                {{/if}}
+                            </td>
+                            <td class="user-actions">
+                                <button type="button" class="edit" data-id="{{this._id}}" data-name="{{this.name}}"
+                                    data-email="{{this.email}}" data-bs-toggle="modal" data-bs-target="#editUserModal">
+                                    Edit
+                                </button>
+
+                                <form method="POST" action="/admin/toggle-status/{{this._id}}" style="display:inline;">
+                                    {{#if (eq this.status "active")}}
+                                    <button type="submit" class="status-blocked">Block</button>
+                                    {{else}}
+                                    <button type="submit" class="status.unblock">Unblock</button>
+                                    {{/if}}
+                                </form>
+                            </td>
+
+                            <td><button onclick="deleteUser('{{this.id}}')" class="delete-btn"><i
+                                        class="fa-solid fa-trash"></i></button></td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+
+                </table>
+            </div>
+        </main>
+
+
+        <!-- Add Users  -->
+
+        <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content"
+                    style="background: rgba(255, 255, 255, 0.15); border-radius:15px; border:1px solid rgba(255,255,255,0.2);">
+
+
+                    <div class="modal-header" style="border-bottom:1px solid rgba(255,255,255,0.2);">
+                        <h5 class="modal-title text-white" id="addUserModalLabel">Add New User</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                            style="filter:invert(1)"></button>
+                    </div>
+
+                    <div class="modal-body text-white">
+
+                        <div id="addUserMessage" style="text-align: center; margin-bottom:10px; font-weight:500;"></div>
+
+                        <form id="addUserForm" method="POST">
+                            <div class="mb-3">
+                                <label for="addUserName" class="form-label">Name</label>
+                                <input type="text" id="addUserName" name="name" class="form-control"
+                                    placeholder="Enter name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="addUserEmail" class="form-label">Email</label>
+                                <input type="email" id="addUserEmail" name="email" class="form-control"
+                                    placeholder="Enter email">
+                            </div>
+                            <div class="mb-3">
+                                <label for="addUserPassword" class="form-label">Password</label>
+                                <input type="password" id="addUserPassword" name="password" class="form-control"
+                                    placeholder="Enter password">
+                            </div>
+                        </form>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" form="addUserForm" class="btn btn-dark">Add User</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Users  -->
+
+        <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <form id="editUserForm" method="POST" action="/admin/edit-user">
+                            <div class="mb-3">
+                                <input type="hidden" id="editUserID" name="id">
+                                <label for="editUserName" class="form-label">Name</label>
+                                <input type="text" id="editUserName" name="name" class="form-control" placeholder="Name"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editUserEmail" class="form-label">Email</label>
+                                <input type="email" id="editUserEmail" name="email" class="form-control"
+                                    placeholder="Email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editUserEmail" class="form-label">New password</label>
+                                <input type="password" id="editUserPasword" name="password" class="form-control"
+                                    placeholder="Password" required>
+                            </div>
+                        </form>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" form="editUserForm" class="btn btn-dark">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+            <p>&copy; 2025 M. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+
+        //Edit user
+
+        document.querySelectorAll('.edit').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('editUserID').value = btn.dataset.id;
+                document.getElementById('editUserName').value = btn.dataset.name;
+                document.getElementById('editUserEmail').value = btn.dataset.email;
+            });
+        });
+
+        //Add user
+
+        const form = document.getElementById('addUserForm');
+        const messageEl = document.getElementById('addUserMessage');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            messageEl.textContent = '';
+            messageEl.style.color = '#fff';
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            const nameRegex = /^[A-Za-z\s]{3,50}$/;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*]{6,}$/;
+
+            if (!nameRegex.test(data.name)) {
+                messageEl.textContent = "Name must be 3-50 letters only.";
+                messageEl.style.color = '#e3342f';
+                return;
+            }
+
+            if (!emailRegex.test(data.email)) {
+                messageEl.textContent = "Enter a valid email address.";
+                messageEl.style.color = '#e3342f';
+                return;
+            }
+
+            if (!passwordRegex.test(data.password)) {
+                messageEl.textContent = "Password must be min 6 chars, include letters and numbers.";
+                messageEl.style.color = '#e3342f';
+                return;
+            }
+
+            try {
+                const response = await fetch('/admin/add-user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    messageEl.textContent = result.message;
+                    messageEl.style.color = '#155724';
+                    form.reset();
+
+                    setTimeout(() => {
+                        const modalEl = document.getElementById('addUserModal');
+                        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                        modal.hide();
+                        messageEl.textContent = '';
+                    }, 1500);
+                } else {
+                    messageEl.textContent = result.message;
+                    messageEl.style.color = '#e3342f';
+                }
+
+            } catch (err) {
+                console.error(err);
+                messageEl.textContent = 'Something went wrong';
+                messageEl.style.color = '#e3342f';
+            }
+        });
+
+        // Delete User
+
+        function deleteUser(userId) {
+            if (!userId) {
+                Swal.fire("Invalid!", "User ID is missing.", "error");
+                return;
+            }
+
+            Swal.fire({
+                text: "Are you sure you want to delete user?",
+                showCancelButton: true,
+                confirmButtonColor: "#3daeffbf",
+                cancelButtonColor: "#ef4444b2",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/admin/delete-user/${userId}`;
+
+                }
+            });
+        }
+
+
+
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+</body>
+
+</html>
