@@ -33,9 +33,9 @@ const login = async (req, res) => {
 }
 
 const logout = (req, res) => {
-    req.session.admin = null;
+    delete req.session.admin;
     res.status(302).redirect('/admin/login');
-}
+};
 
 const loadDashboard = async (req, res) => {
     try {
@@ -57,7 +57,7 @@ const editUser = async (req, res) => {
     try {
         const { id, name, email, password } = req.body;
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, saltRound);
 
         await userModel.findByIdAndUpdate(id, {
             name,

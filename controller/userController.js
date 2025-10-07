@@ -58,11 +58,10 @@ const login = async (req, res) => {
 };
 
 const logout = (req, res) => {
-    req.session.destroy(err => {
-        if (err) console.error(err);
-        res.status(302).redirect("/user/login");
-    });
+    delete req.session.user; 
+    res.redirect('/user/login');
 };
+
 
 const loadRegister = (req, res) => {
     res.status(200).render('user/register');

@@ -19,12 +19,12 @@ app.use(express.json());
 app.use(session({
     secret: 'mysecretkey',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     rolling: true,
     cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day
 }));
 
-// Static files
+// Static files6 
 app.use(express.static(path.join(__dirname, "public")));
 
 // View engine
