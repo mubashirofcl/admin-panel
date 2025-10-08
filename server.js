@@ -33,6 +33,9 @@ app.set('view engine', 'hbs');
 
 // HBS helpers
 hbs.registerHelper("eq", (a, b) => a === b);
+hbs.registerHelper('addOne', function (value) {
+    return value + 1;
+});
 
 // Routes
 const userRoutes = require('./routes/user');

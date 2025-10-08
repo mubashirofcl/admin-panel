@@ -77,18 +77,19 @@ const toggleStatus = async (req, res) => {
         const user = await userModel.findById(req.params.id);
 
         if (!user) {
-            return res.status(404).redirect("/admin/dashboard");
+            return res.status(404).redirect(req.get('Referer'));
         }
 
         user.status = user.status === "active" ? "blocked" : "active";
         await user.save();
 
-        return res.status(302).redirect("/admin/dashboard");
+        return res.redirect(req.get('Referer'));
     } catch (err) {
         console.error(err);
-        return res.status(500).redirect("/admin/dashboard");
+        return res.status(500).redirect(req.get('Referer'));
     }
 };
+
 
 const addUser = async (req, res) => {
     try {
